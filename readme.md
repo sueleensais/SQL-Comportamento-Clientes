@@ -1,4 +1,4 @@
-# SQL - Análise do Comportamento de Clientes em Janelas Temporais
+# Análise do Comportamento de Clientes em Janelas Temporais
 
 ## Descrição 
 Este projeto consiste na estruturação de uma Feature Store utilizando SQL para analisar o comportamento transacional de clientes em diferentes janelas temporais (7, 14, 28 e 56 dias). A solução transforma dados brutos de transações em métricas agregadas de engajamento, preferência de produtos e padrões de atividade (diária e por período).
@@ -232,6 +232,7 @@ FROM tb_join
 ```
 --- 
 *Projeto desenvolvido como parte do programa de formação "SQL – Primeiras Magias" (TeoMeWhy), focado em elevar o nível de análise de dados do básico ao avançado.*
+
 
 
 
