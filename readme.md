@@ -1,55 +1,30 @@
 # SQL - Análise do Comportamento de Clientes em Janelas Temporais
 
-Este repositório contém meus estudos e práticas do curso **"SQL – Primeiras Magias"**, ministrado por Téo Calvo na plataforma **TeoMeWhy** (https://www.teomewhy.org).  
-Foi meu primeiro contato com bancos de dados relacionais e com a linguagem SQL, e a experiência me levou do zero até técnicas avançadas.
+## Descrição 
+Este projeto consiste na estruturação de uma Feature Store utilizando SQL para analisar o comportamento transacional de clientes em diferentes janelas temporais (7, 14, 28 e 56 dias). A solução transforma dados brutos de transações em métricas agregadas de engajamento, preferência de produtos e padrões de atividade (diária e por período).
 
-Durante o curso, utilizei dados reais (anonimizados) e coloquei em prática muitos exercícios.
+O objetivo é fornecer uma base sólida de dados prontos para análise (analytics-ready), permitindo identificar o churn potencial, a lealdade do cliente e a eficácia de produtos em períodos específicos através de métricas de recência, frequência e valor.
 
-# Conteúdo do curso
+## Pipeline
+1. Extração e Tratamento Temporal 
+2. Agregação de Transações e Pontos 
+3. Enriquecimento e Rankeamento de Produtos 
+4. Análise de Sazonalidade e Período 
+5. Consolidação e Persistência de Features 
 
-- **Fundamentos Básicos**  
-  Conceitos de banco de dados, SGBD, tabelas, registros, chaves primárias e estrangeiras, constraints e sequências.  
+## Objetivos Técnicos
+* **Feature Engineering:** Criação de variáveis de tempo dinâmicas utilizando funções de data e cálculos de diferença (julianday) para segmentação temporal.
+* **Agregações Condicionais:** Uso extensivo de `CASE WHEN` dentro de funções de agregação para isolar comportamentos em D7, D14, D28 e D56.
+* **Window Functions:** Implementação de `ROW_NUMBER()` com `PARTITION BY` para identificar o produto mais consumido e os períodos de maior atividade por cliente.
+* **Otimização de Query:** Uso de Common Table Expressions (CTEs) para organizar a lógica de negócio em blocos modulares e legíveis.
 
-- **Ferramentas**  
-  Uso do VSCode integrado ao SQLite.  
+## Tecnologias e Ferramentas
+* **SQLite:** Banco de dados relacional para armazenamento e consulta de dados reais anonimizados.
+* **VS Code:** Ambiente de desenvolvimento integrado para execução e teste de scripts SQL.
+* **Linguagem SQL:** Aplicação de conceitos DDL (Data Definition) e DML (Data Manipulation) para construção de pipelines de dados.
 
-- **Consultas (DQL)**  
-  `SELECT`, `FROM`, `WHERE`, `CASE WHEN`.  
-
-- **Agregações**  
-  `SUM`, `COUNT`, `AVG`, `MIN`, `MAX`.  
-
-- **Organização de dados**  
-  `GROUP BY`, `ORDER BY`, `HAVING`.  
-
-- **JOINs**  
-  `LEFT`, `RIGHT`, `INNER`.  
-
-- **Consultas avançadas**  
-  Subqueries e CTEs.  
-
-- **Window Functions**  
-  `OVER`, `PARTITION BY`, `LAG`, `LEAD`, `ROW_NUMBER`.  
-
-- **DDL e DML**  
-  `CREATE`, `DROP`, `INSERT`, `DELETE`, `UPDATE`.  
-
-# Projeto Prático
-
-No projeto prático, desenvolvi uma tabela para entender o comportamento de clientes em diferentes janelas temporais (7, 14, 28 e 56 dias) e responder aos problemas de negócio abaixo:
-
-1. Quantidade de transações históricas (vida, D7, D14, D28, D56);
-2. Dias desde a última transação
-3. Idade na base
-4. Produto mais usado (vida, D7, D14, D28, D56);
-5. Saldo de pontos atual;
-6. Pontos acumulados positivos (vida, D7, D14, D28, D56);
-7. Pontos acumulados negativos (vida, D7, D14, D28, D56);
-8. Dias da semana mais ativos (D28)
-9. Período do dia mais ativo (D28)
-10. Engajamento em D28 versus Vida
-
-O projetoconsolidou todo o aprendizado do curso em um cenário realista. 
+## Desenvolvimento da Solução
+### 1. Extração e Tratamento Temporal
 
 ```sql
 CREATE TABLE tb_freature_store_cliente AS 
@@ -74,7 +49,9 @@ tb_cliente AS (
     
     FROM clientes
 ),
-
+```
+### 2. Agregação de Transações e Pontos
+```sql
 tb_sumario_transações AS (
     SELECT idCliente,
     count(IdTransacao) AS QtdeTransaçõesVida,
@@ -102,7 +79,10 @@ tb_sumario_transações AS (
 FROM tb_transações
 GROUP BY idCliente
 ),
+```
+### 3. Enriquecimento e Rankeamento de Produto
 
+```sql
 tb_transação_produto AS (
 
     SELECT t1.*,
@@ -145,7 +125,10 @@ tb_cliente_produto_rn AS (
 
     FROM tb_cliente_produto
 ),
+```
+### 4. Análise de Sazonalidade e Período
 
+```sql
 tb_cliente_dia AS (
 
     SELECT idCliente,
@@ -189,7 +172,10 @@ tb_cliente_rn AS (
 
     FROM tb_cliente_período
 ),
+```
+### 5. Consolidação e Persistência de Features
 
+```sql
 tb_join AS (
 
     SELECT t1.*,
@@ -244,5 +230,8 @@ SELECT
         1. * QtdeTransações28 / QtdeTransaçõesVida AS Engajamento28xVida
 FROM tb_join
 ```
+--- 
+*Projeto desenvolvido como parte do programa de formação "SQL – Primeiras Magias" (TeoMeWhy), focado em elevar o nível de análise de dados do básico ao avançado.*
+
 
 
